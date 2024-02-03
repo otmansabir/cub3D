@@ -1,5 +1,16 @@
-#include "cub3d.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3d.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
+/*   Updated: 2024/02/03 10:43:06 by osabir           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "cub3d.h"
 
 void	ft_putchar_fd(char c, int fd)
 {
@@ -21,10 +32,10 @@ void	ft_putstr_fd(char *s, int fd)
 	}
 }
 
-void    ft_exit_error(char *error)
+void	ft_exit_error(char *error)
 {
-    ft_putstr_fd(error, 2);
-    exit(1);
+	ft_putstr_fd(error, 2);
+	exit(1);
 }
 
 void	check_file_name(char *file_name, char *compre)
@@ -62,25 +73,6 @@ void	ft_draw_pixel(t_mlx **mlx, int x, int y, int color)
 	}
 }
 
-// void draw_circle(t_globel **globel, t_mlx **mlx, int color)
-// {
-//     int x = ((*globel)->g_player->pos_x + 0.5) * CUB_SIZE; // Adjusted x position
-//     int y = ((*globel)->g_player->pos_y + 0.5) * CUB_SIZE; // Adjusted y position
-//     int radius = 50;
-
-//     int i = x - radius;
-//     while (i <= x + radius)
-//     {
-//         int j = y - radius;
-//         while (j <= y + radius)
-//         {
-//             if ((i - x) * (i - x) + (j - y) * (j - y) <= radius * radius)
-//                 mlx_pixel_put((*mlx)->mlx_ptr, (*mlx)->mlx_window, i, j, color);
-//             j++;
-//         }
-//         i++;
-//     }
-// }
 
 void draw_circle(t_globel **globel, t_mlx **mlx, int color)
 {
@@ -99,42 +91,6 @@ void draw_circle(t_globel **globel, t_mlx **mlx, int color)
         i++;
     }
 }
-
-
-// void draw_circle(t_globel **globel, t_mlx **mlx, int color)
-// {
-
-//     int x = (((*globel)->g_player->pos_x + ( + 0.5)) * CUB_SIZE) + (*globel)->g_player->x_move ; // موضع x المعدل
-//     int y = (((*globel)->g_player->pos_y + 0.5) * CUB_SIZE) + (*globel)->g_player->y_move; // موضع y المعدل
-
-//     // رسم الدائرة الملونة
-//     int i = x - RADIUS;
-//     while (i <= x + RADIUS)
-//     {
-//         int j = y - RADIUS;
-//         while (j <= y + RADIUS)
-//         {
-//             if ((i - x) * (i - x) + (j - y) * (j - y) <= RADIUS * RADIUS)
-// 			{
-//                 mlx_pixel_put((*mlx)->mlx_ptr, (*mlx)->mlx_window, i, j, color);
-
-// 			}
-//             j++;
-//         }
-//         i++;
-//     }
-
-    // int line_end_x = x + LINE_LENGTH;
-    // // int line_end_y = y;
-
-    // while (x <= line_end_x)
-    // {
-    //     mlx_pixel_put((*mlx)->mlx_ptr, (*mlx)->mlx_window, x, y, color);
-    //     x++;
-    // }
-// }
-
-
 
 void	draw_window(t_mlx **mlx, t_globel **globel)
 {

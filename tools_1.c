@@ -23,7 +23,7 @@ void	ft_free_t_map_and_error(t_map **map)
 	(*map)->so = NULL;
 	(*map)->we = NULL;
 	(*map)->ea = NULL;
-	
+
 }
 
 int ft_strlen(const char *str)

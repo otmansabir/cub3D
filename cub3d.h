@@ -1,6 +1,7 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
+# include <mlx.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -9,34 +10,34 @@
 # include <limits.h>
 # include <stdbool.h>
 # include <math.h>
-# if defined(__APPLE__)
-#  include <key_macos.h>
-# else
-#  include </home/otmansabir/minilibx_linux/mlx.h>
-# endif
+// # if defined(__APPLE__)
+// #  include <key_macos.h>
+// # else
+// #  include </home/otmansabir/minilibx_linux/mlx.h>
+// # endif
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 5
 # endif
 
-# ifndef M_PI
-#  define M_PI (3.14159265358979323846264338327950288)
-# endif
+// # ifndef M_PI
+// #  define M_PI (3.14159265358979323846264338327950288)
+// # endif
 
 
 # define CUB_SIZE 32
 
-# define UP 65362
-# define DOWN 65364
-# define RIGHT 65363
-# define LEFT 65361
+# define UP 126
+# define DOWN 125
+# define RIGHT 124
+# define LEFT 123
 
-# define KEY_W 119
-# define KEY_A 97
-# define KEY_D 100
-# define KEY_S 115
+# define KEY_W 13
+# define KEY_A 0
+# define KEY_D 2
+# define KEY_S 1
 
-# define ESC 65307
+# define ESC 53
 
 # define RADIUS 5
 # define LINE_LENGTH 20
