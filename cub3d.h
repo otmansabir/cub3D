@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
+/*   Updated: 2024/02/04 19:28:15 by osabir           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CUB3D_H
 # define CUB3D_H
 
@@ -10,22 +22,15 @@
 # include <limits.h>
 # include <stdbool.h>
 # include <math.h>
-// # if defined(__APPLE__)
-// #  include <key_macos.h>
-// # else
-// #  include </home/otmansabir/minilibx_linux/mlx.h>
-// # endif
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 5
 # endif
 
-// # ifndef M_PI
-// #  define M_PI (3.14159265358979323846264338327950288)
-// # endif
-
-
 # define CUB_SIZE 32
+# define WINDOW_WIFTH 320
+# define WINDOW_HEIGHT 200
+
 
 # define UP 126
 # define DOWN 125
@@ -40,10 +45,9 @@
 # define ESC 53
 
 # define RADIUS 5
+# define ANGLE 60
+# define MOVE_SPEED 2.0
 # define LINE_LENGTH 20
-
-// # define ROTATIONSPEED (M_PI / 2)
-
 
 
 typedef struct s_map
@@ -61,14 +65,16 @@ typedef struct s_map
 
 typedef struct s_player
 {
-	int	pos_x;
-	int	pos_y;
-	int	derction;
-	double rotation_speed;
-	double move_speed;
-	double rotation_angle;
-	int	x_move;
-	int	y_move;
+	int		pos_x;
+	int		pos_y;
+	int		line_x;
+	int		line_y;
+	int		derction;
+	double	rotation_speed;
+	double	move_speed;
+	double	rotation_angle;
+	int		x_move;
+	int		y_move;
 }			t_player;
 
 typedef struct s_color
@@ -94,7 +100,7 @@ typedef struct s_mlx
 	void	*mlx_window;
 }			t_mlx;
 
-typedef	struct s_globel
+typedef struct s_globel
 {
 	struct s_map		*g_map;
 	struct s_mlx		*mlx;
@@ -115,12 +121,12 @@ char	*ft_strnstr(const char *hay, const char *need, size_t len);
 //	file >> cub3d.c
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
-void    ft_exit_error(char *error);
+void	ft_exit_error(char *error);
 
 //  file get_next_line_utils.c
 char	*get_next_line(int fd);
 char	*ft_strchr(const char *s, int c);
-char	*ft_substr(char const *s, unsigned int start, size_t len);\
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 void	ft_memset(void *b, int c, size_t len);
 void	*ft_calloc(size_t count, size_t size);
 
@@ -128,7 +134,7 @@ void	*ft_calloc(size_t count, size_t size);
 char	*check_side(char *line);
 t_map	*ft_malloc(t_map **map);
 void	ft_free_t_map_and_error(t_map **map);
-int 	ft_strlen(const char *str);
+int		ft_strlen(const char *str);
 t_done	*give_value(t_done *done);
 int		ft_check_map(char *line);
 t_map	*parsing_file(char *filename, t_globel *globle);
@@ -146,6 +152,6 @@ void	*ft_memcpy(void *dst, const void *src, size_t n);
 char	*ft_strdup(const char *s1);
 
 //   NULL
-void draw_circle(t_globel **globel, t_mlx **mlx, int color);
+void	draw_circle(t_globel **globel, t_mlx **mlx, int color);
 
 #endif

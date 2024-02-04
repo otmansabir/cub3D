@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/03 13:06:11 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/04 20:04:15 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ void	check_file_name(char *file_name, char *compre)
 
 void	ft_draw_pixel(t_mlx **mlx, int x, int y, int color)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	j = 0;
 	while (j < CUB_SIZE - 1)
@@ -66,9 +66,10 @@ void	ft_draw_pixel(t_mlx **mlx, int x, int y, int color)
 		i = 0;
 		while (i < CUB_SIZE - 1)
 		{
-			mlx_pixel_put((*mlx)->mlx_ptr, (*mlx)->mlx_window, x + i, y + j, color);
+			mlx_pixel_put((*mlx)->mlx_ptr,
+				(*mlx)->mlx_window, x + i, y + j, color);
 			i++;
-		} 
+		}
 		j++;
 	}
 }
@@ -76,26 +77,67 @@ void	ft_draw_pixel(t_mlx **mlx, int x, int y, int color)
 
 void draw_circle(t_globel **globel, t_mlx **mlx, int color)
 {
-    int x = ((*globel)->g_player->pos_x + 0.5) * CUB_SIZE + (*globel)->g_player->x_move; // Adjusted x position
-    int y = ((*globel)->g_player->pos_y + 0.5) * CUB_SIZE + (*globel)->g_player->y_move; // Adjusted y position
+	int	i;
+	int	j;
 
-    int i = x - RADIUS;
-    while (i <= x + RADIUS) {
-        int j = y - RADIUS;
-        while (j <= y + RADIUS) {
-            if ((i - x) * (i - x) + (j - y) * (j - y) <= RADIUS * RADIUS) {
-                mlx_pixel_put((*mlx)->mlx_ptr, (*mlx)->mlx_window, i, j, color);
-            }
-            j++;
-        }
-        i++;
-    }
+	i = (*globel)->g_player->pos_x - RADIUS;
+	while (i <= (*globel)->g_player->pos_x + RADIUS)
+	{
+		j = (*globel)->g_player->pos_y - RADIUS;
+		while (j <= (*globel)->g_player->pos_y + RADIUS)
+		{
+			if ((i - (*globel)->g_player->pos_x)
+				* (i - (*globel)->g_player->pos_x)
+				+ (j - (*globel)->g_player->pos_y)
+				* (j - (*globel)->g_player->pos_y) <= RADIUS * RADIUS)
+				mlx_pixel_put((*mlx)->mlx_ptr, (*mlx)->mlx_window, i, j, color);
+			j++;
+		}
+		i++;
+	}
+}
+
+void draw_line(t_globel **globle, int color)
+{
+	int		dx;
+	int		dy;
+	int		line;
+	double	px;
+	double	py;
+
+	dx = (*globle)->g_player->line_x - (*globle)->g_player->pos_x;
+	dy = (*globle)->g_player->line_y - (*globle)->g_player->pos_y;
+	// line = sqrt((dx * dx) + (dy * dy));
+	if (abs(dx) > abs(dy))
+		line = dx;
+	else
+		line = dy;
+	dx /= line;
+	dy /= line;
+	px = (*globle)->g_player->pos_x;
+	py = (*globle)->g_player->pos_y;
+	while (line)
+	{
+		mlx_pixel_put((*globle)->mlx->mlx_ptr, (*globle)->mlx->mlx_window, px, py, color);
+		px += dx;
+		py += dy;
+		--line;
+	}
+}
+
+void	calc_line(t_globel **globle, int color)
+{
+	(*globle)->g_player->line_x = (*globle)->g_player->pos_x
+		+ cos((*globle)->g_player->rotation_angle) * 1;
+	(*globle)->g_player->line_y = (*globle)->g_player->pos_x
+		+ sin((*globle)->g_player->rotation_angle) * 1;
+	draw_line(globle, color);
 }
 
 void	draw_window(t_mlx **mlx, t_globel **globel)
 {
-	int x;
-	int y;
+	int	x;
+	int	y;
 
 	y = 0;
 	while ((*globel)->g_map->map[y])
@@ -113,28 +155,16 @@ void	draw_window(t_mlx **mlx, t_globel **globel)
 		}
 		y++;
 	}
-	y = 0;
-	while ((*globel)->g_map->map[y])
-	{
-		x = 0;
-		while ((*globel)->g_map->map[y][x]) 
-		{
-			if (ft_strchr("SWEN", (*globel)->g_map->map[y][x]))
-			{
-				draw_circle(globel, mlx, 0x4166F5);
-
-				return;
-			}
-				
-			x++;
-		}
-		y++;
-	}
+	draw_circle(globel, mlx, 0x4166F5);
+	calc_line(globel, 0x4166F5);
 }
 
 
+
+
+
  void	ft_globle(t_globel **globle)
- {
+{
 	*globle = malloc(sizeof(t_globel));
 	if (!(*globle))
 		exit(1);
@@ -142,13 +172,28 @@ void	draw_window(t_mlx **mlx, t_globel **globel)
 	(*globle)->g_map = NULL;
 	(*globle)->g_done = NULL;
 	(*globle)->mlx = NULL;
- }
+}
 
+double	rotation_angle(int c)
+{
+	double	rot_ang;
+
+	rot_ang = 0.0;
+	if (c == 'S')
+		rot_ang = (M_PI / 2);
+	else if (c == 'W')
+		rot_ang = M_PI;
+	else if (c == 'E')
+		rot_ang = 0.0;
+	else if (c == 'N')
+		rot_ang = ((M_PI * 3) / 2);
+	return (rot_ang);
+}
 
 t_player	*ft_player(t_globel *globel)
 {
 	int	x;
-	int y;
+	int	y;
 
 	y = 0;
 	while (globel->g_map->map[y])
@@ -158,8 +203,12 @@ t_player	*ft_player(t_globel *globel)
 		{
 			if (ft_strchr("SWEN", globel->g_map->map[y][x]))
 			{
-				globel->g_player->pos_x = x;
-				globel->g_player->pos_y = y;
+				globel->g_player->rotation_angle = rotation_angle
+					(globel->g_map->map[y][x]);
+				globel->g_player->pos_x = (x + 0.5) * CUB_SIZE;
+				globel->g_player->pos_y = (y + 0.5) * CUB_SIZE;
+				globel->g_player->rotation_speed = 2 * (M_PI / 180);
+				globel->g_player->move_speed = MOVE_SPEED;
 				break ;
 			}
 			x++;
@@ -187,33 +236,33 @@ int	keycode(int key, t_globel **globel)
 	(void)globel;
 	if (key == UP || key == KEY_W)
 	{
-		// (*globel)->g_player->pos_y -= 1;
-		(*globel)->g_player->y_move = -5;
-		(*globel)->g_player->x_move = 0;
+		(*globel)->g_player->pos_x
+			+= cos((*globel)->g_player->rotation_angle) * MOVE_SPEED;
+		(*globel)->g_player->pos_y
+			+= sin((*globel)->g_player->rotation_angle) * MOVE_SPEED;
 		mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
 		draw_window(&(*globel)->mlx, globel);
 	}
 	else if (key == DOWN || key == KEY_S)
 	{
-		// (*globel)->g_player->pos_y += 1;
-		(*globel)->g_player->y_move = 5;
-		(*globel)->g_player->x_move = 0;
+		(*globel)->g_player->pos_x
+			-= cos((*globel)->g_player->rotation_angle) * MOVE_SPEED;
+		(*globel)->g_player->pos_y
+			-= sin((*globel)->g_player->rotation_angle) * MOVE_SPEED;
 		mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
 		draw_window(&(*globel)->mlx, globel);
 	}
 	else if (key == RIGHT || key == KEY_D)
 	{
-		// (*globel)->g_player->pos_x += 1;
-		(*globel)->g_player->x_move = 5;
-		(*globel)->g_player->y_move = 0;
+		(*globel)->g_player->rotation_angle
+			+= (*globel)->g_player->rotation_speed;
 		mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
 		draw_window(&(*globel)->mlx, globel);
 	}
 	else if (key == LEFT || key == KEY_A)
 	{
-		// (*globel)->g_player->pos_x -= 1;
-		(*globel)->g_player->x_move = -5;
-		(*globel)->g_player->y_move = 0;
+		(*globel)->g_player->rotation_angle
+			-= (*globel)->g_player->rotation_speed;
 		mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
 		draw_window(&(*globel)->mlx, globel);
 	}
@@ -234,7 +283,7 @@ int main(int ac, char **av)
 	mlx = NULL;
 	globel = NULL;
 	player = NULL;
-    if (ac != 2)
+	if (ac != 2)
 		ft_exit_error("error\n");
 	check_file_name(av[1], ".cub");
 	ft_globle(&globel);
@@ -253,12 +302,12 @@ int main(int ac, char **av)
 	if (!mlx)
 		exit(1);
 	mlx->mlx_ptr = mlx_init();
-	mlx->mlx_window = mlx_new_window(mlx->mlx_ptr, 
-		map->map_x * CUB_SIZE, map->map_y * CUB_SIZE, "CUB3D");
+	mlx->mlx_window = mlx_new_window(mlx->mlx_ptr,
+		  (map->map_x * CUB_SIZE), (map->map_y * CUB_SIZE), "CUB3D");
 	globel->mlx = mlx;
 	mlx_clear_window(mlx->mlx_ptr, mlx->mlx_window);
 	draw_window(&mlx, &globel);
 	mlx_key_hook(mlx->mlx_window, &keycode, &globel);
 	mlx_loop(mlx->mlx_ptr);
-    return (0);
+	return (0);
 }
