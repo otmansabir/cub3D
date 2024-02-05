@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/05 12:24:54 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/05 13:00:05 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,12 +338,11 @@ int main(int ac, char **av)
 		exit(1);
 	mlx->mlx_ptr = mlx_init();
 	mlx->mlx_window = mlx_new_window(mlx->mlx_ptr,
-		  (map->map_x * CUB_SIZE), (map->map_y * CUB_SIZE), "CUB3D");
+		(WIFTH * CUB_SIZE), (HEIGHT * CUB_SIZE), "CUB3D");
 	globel->mlx = mlx;
 	mlx_clear_window(mlx->mlx_ptr, mlx->mlx_window);
 	draw_window(&mlx, &globel);
 	mlx_hook(mlx->mlx_window, 2, 0, &keycode, &globel);
-	// mlx_key_hook(mlx->mlx_window, &keycode, &globel);
-	mlx_loop(mlx->mlx_ptr);
+ 	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }

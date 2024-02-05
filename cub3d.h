@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/05 12:37:11 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/05 12:51:31 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 # endif
 
 # define CUB_SIZE 32
-# define WINDOW_WIFTH 320
-# define WINDOW_HEIGHT 200
+# define WIFTH 320
+# define HEIGHT 200
 
 # define UP 126
 # define DOWN 125
