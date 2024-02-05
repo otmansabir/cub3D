@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/04 19:28:15 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/05 12:37:11 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 # define WINDOW_WIFTH 320
 # define WINDOW_HEIGHT 200
 
-
 # define UP 126
 # define DOWN 125
 # define RIGHT 124
@@ -44,11 +43,15 @@
 
 # define ESC 53
 
-# define RADIUS 5
+# define RADIUS 3
 # define ANGLE 60
-# define MOVE_SPEED 2.0
-# define LINE_LENGTH 20
+# define MOVE_SPEED 3.0
+# define LINE_LENGTH 10
 
+# define RED 0xed0505  
+# define ORANGE 0xf67c41
+# define WHITE 0xfff8f0
+# define BLACK 0x000000
 
 typedef struct s_map
 {
@@ -115,8 +118,6 @@ int		ft_isdigit(int c);
 int		checkside2(char *line);
 void	ft_test_forma(char *line);
 char	*ft_strnstr(const char *hay, const char *need, size_t len);
-
-
 
 //	file >> cub3d.c
 void	ft_putchar_fd(char c, int fd);

@@ -6,7 +6,7 @@
 #    By: osabir <osabir@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/03 10:43:21 by osabir            #+#    #+#              #
-#    Updated: 2024/02/03 11:09:26 by osabir           ###   ########.fr        #
+#    Updated: 2024/02/05 09:29:13 by osabir           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,14 +22,14 @@ OBJ 	= $(SRC:.c=.o)
 
 NAME 	= cub3D
 
-HD 	= cub3D.h
+HD 	= cub3d.h
 
 all 	: $(NAME)
 	
 $(NAME) : $(OBJ)
 	$(CC) $(OBJ) $(MLX) -o $(NAME)
 
-%.o : %.c $(HD1)
+%.o : %.c $(HD)
 	$(CC) $(FLAG) -Imlx -c $< -o $@
 
 clean :
