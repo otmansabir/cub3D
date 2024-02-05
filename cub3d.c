@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/04 20:04:15 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/04 20:27:42 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,11 @@ void draw_line(t_globel **globle, int color)
 
 	dx = (*globle)->g_player->line_x - (*globle)->g_player->pos_x;
 	dy = (*globle)->g_player->line_y - (*globle)->g_player->pos_y;
-	// line = sqrt((dx * dx) + (dy * dy));
-	if (abs(dx) > abs(dy))
-		line = dx;
-	else
-		line = dy;
+	line = sqrt((dx * dx) + (dy * dy));
+	// if (abs(dx) > abs(dy))
+	// 	line = abs(dx);
+	// else
+	// 	line = abs(dy);
 	dx /= line;
 	dy /= line;
 	px = (*globle)->g_player->pos_x;
@@ -127,10 +127,12 @@ void draw_line(t_globel **globle, int color)
 
 void	calc_line(t_globel **globle, int color)
 {
-	(*globle)->g_player->line_x = (*globle)->g_player->pos_x
-		+ cos((*globle)->g_player->rotation_angle) * 1;
-	(*globle)->g_player->line_y = (*globle)->g_player->pos_x
-		+ sin((*globle)->g_player->rotation_angle) * 1;
+	(*globle)->g_player->line_x = (*globle)->g_player->pos_x;
+	(*globle)->g_player->line_y = (*globle)->g_player->pos_y;
+	(*globle)->g_player->line_x
+		+= cos((*globle)->g_player->rotation_angle) * 15;
+	(*globle)->g_player->line_y
+		+= sin((*globle)->g_player->rotation_angle) * 15;
 	draw_line(globle, color);
 }
 
@@ -180,13 +182,25 @@ double	rotation_angle(int c)
 
 	rot_ang = 0.0;
 	if (c == 'S')
+	{
+		printf("S\n");
 		rot_ang = (M_PI / 2);
+	}
 	else if (c == 'W')
+	{
+		printf("W\n");
 		rot_ang = M_PI;
+	}
 	else if (c == 'E')
+	{
+		printf("E\n");
 		rot_ang = 0.0;
+	}
 	else if (c == 'N')
+	{
+		printf("N\n");
 		rot_ang = ((M_PI * 3) / 2);
+	}
 	return (rot_ang);
 }
 
