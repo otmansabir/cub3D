@@ -6,13 +6,13 @@
 #    By: osabir <osabir@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/03 10:43:21 by osabir            #+#    #+#              #
-#    Updated: 2024/02/05 09:29:13 by osabir           ###   ########.fr        #
+#    Updated: 2024/02/07 17:28:15 by osabir           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC		= cc 
 
-FLAG	= -Wall -Werror -Wextra
+FLAG	= -Wall -Werror -Wextra -Ofast
 
 MLX		= -lmlx -framework OpenGL -framework AppKit
 

@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/05 13:00:05 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/07 17:31:46 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,64 @@ void	calc_line(t_globel **globle, int color)
 	draw_line(globle, color);
 }
 
+void draw_ray_line(t_globel **globle, int ray_x, int ray_y)
+{
+	int		dx;
+	int		dy;
+	int		line;
+	double	x;
+	double	y;
+	double	px;
+	double	py;
+
+	dx = ray_x - (*globle)->g_player->pos_x;
+	dy = ray_y - (*globle)->g_player->pos_y;
+	if (abs(dx) > abs(dy))
+		line = abs(dx);
+	else
+		line = abs(dy);
+	x = (double)dx / (double)line;
+	y = (double)dy / (double)line;
+	px = (*globle)->g_player->pos_x;
+	py = (*globle)->g_player->pos_y;
+	while (line--)
+	{
+		mlx_pixel_put((*globle)->mlx->mlx_ptr, (*globle)->mlx->mlx_window, (int)px, (int)py, RED);
+		px += x;
+		py += y;
+	}
+}
+
+void	calc_rays(t_globel **globle, double rayangle)
+{
+	double	x;
+	double	y;
+
+	x = (*globle)->g_player->pos_x;
+	y = (*globle)->g_player->pos_y;
+	x += cos(rayangle) * LINE_LENGTH;
+	y += sin(rayangle) * LINE_LENGTH;
+	draw_ray_line(globle, x, y);
+}
+
+void	draw_ray(t_globel **globle)
+{
+	int		column;
+	int		i;
+	double	rayangle;
+
+	column = 0;
+	i = 0;
+	rayangle = (*globle)->g_player->rotation_angle - ((*globle)->g_player->fov_angle / 2);
+	while (i < (*globle)->g_player->num_rays)
+	{
+		calc_rays(globle, rayangle);
+		rayangle += (*globle)->g_player->fov_angle / (*globle)->g_player->num_rays;
+		column++;
+		i++;
+	}
+}
+
 void	draw_window(t_mlx **mlx, t_globel **globel)
 {
 	int	x;
@@ -157,8 +215,9 @@ void	draw_window(t_mlx **mlx, t_globel **globel)
 		}
 		y++;
 	}
+	draw_ray(globel);
 	draw_circle(globel, mlx, RED);
-	calc_line(globel, RED);
+	// calc_line(globel, RED);
 }
 
  void	ft_globle(t_globel **globle)
@@ -207,6 +266,8 @@ t_player	*ft_player(t_globel *globel)
 				globel->g_player->pos_y = (y + 0.5) * CUB_SIZE;
 				globel->g_player->rotation_speed = 3 * (M_PI / 180);
 				globel->g_player->move_speed = MOVE_SPEED;
+				globel->g_player->fov_angle = ANGLE * (M_PI / 180);
+				globel->g_player->num_rays = (globel->g_map->map_x * CUB_SIZE) / WALL_STRPI_WIDTH;
 				break ;
 			}
 			x++;
@@ -338,7 +399,8 @@ int main(int ac, char **av)
 		exit(1);
 	mlx->mlx_ptr = mlx_init();
 	mlx->mlx_window = mlx_new_window(mlx->mlx_ptr,
-		(WIFTH * CUB_SIZE), (HEIGHT * CUB_SIZE), "CUB3D");
+		(globel->g_map->map_x * CUB_SIZE),
+		(globel->g_map->map_y * CUB_SIZE), "CUB3D");
 	globel->mlx = mlx;
 	mlx_clear_window(mlx->mlx_ptr, mlx->mlx_window);
 	draw_window(&mlx, &globel);

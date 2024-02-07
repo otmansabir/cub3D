@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/05 12:51:31 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/07 17:36:07 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@
 
 # define RADIUS 3
 # define ANGLE 60
+# define WALL_STRPI_WIDTH 30
 # define MOVE_SPEED 3.0
-# define LINE_LENGTH 10
+# define LINE_LENGTH 30
 
 # define RED 0xed0505  
 # define ORANGE 0xf67c41
@@ -74,8 +75,10 @@ typedef struct s_player
 	int		line_y;
 	int		derction;
 	double	rotation_speed;
-	double	move_speed;
 	double	rotation_angle;
+	double	move_speed;
+	double	fov_angle;
+	int		num_rays;
 	int		x_move;
 	int		y_move;
 }			t_player;
