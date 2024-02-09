@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/04 14:06:01 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/04 14:06:02 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/09 16:16:55 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,10 +131,7 @@ char	*ft_charjoin(char *s1, char c)
 	int		o;
 
 	if (!s1 || !c)
-	{
-		printf("s1 = %s || %c\n", s1, c);
 		return (NULL);
-	}
 	str = malloc(ft_strlen(s1) + 2);
 	if (!str)
 		exit(1);
