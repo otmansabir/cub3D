@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/09 18:58:17 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/10 20:01:18 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@
 # define RADIUS 3
 # define ANGLE 60
 # define WALL_STRPI_WIDTH 1
-# define MOVE_SPEED 2.0
+# define MINIMAP_FACTOR 0.2
+# define MOVE_SPEED 10.0
 # define LINE_LENGTH 30
 
 # define RED 0xed0505  
@@ -108,23 +109,23 @@ typedef struct s_mlx
 
 typedef	struct s_horizontal
 {
-	long	x_intercept;
-	long	y_intercept;
-	long	x_step;
-	long	y_step;
-	long	found_horiz_x;
-	long	found_horiz_y;
+	double	x_intercept;
+	double	y_intercept;
+	double	x_step;
+	double	y_step;
+	double	found_horiz_x;
+	double	found_horiz_y;
 	bool	found_horiz_wall_hit;
 }			t_horizontal;
 
 typedef	struct s_vertical
 {
-	long	x_intercept;
-	long	y_intercept;
-	long	x_step;
-	long	y_step;
-	long	found_vertic_x;
-	long	found_vertic_y;
+	double	x_intercept;
+	double	y_intercept;
+	double	x_step;
+	double	y_step;
+	double	found_vertic_x;
+	double	found_vertic_y;
 	bool	found_vertic_wall_hit;
 }			t_vertical;
 
@@ -132,9 +133,9 @@ typedef	struct s_cast
 {
 	struct s_horizontal		*horizontal;
 	struct s_vertical		*vertical;
-	long					wall_hit_x;
-	long					wall_hit_y;
-	long					distance;
+	double					wall_hit_x;
+	double					wall_hit_y;
+	double					distance;
 	bool					ray_facing_down;
 	bool					ray_facing_up;
 	bool					ray_facing_right;

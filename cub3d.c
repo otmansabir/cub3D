@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/10 10:32:56 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/10 20:27:56 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,17 +95,17 @@ void draw_circle(t_globel **globel, t_mlx **mlx, int color)
 	int	i;
 	int	j;
 
-	i = (*globel)->g_player->pos_x - RADIUS;
+	i = ((*globel)->g_player->pos_x) - RADIUS;
 	while (i <= (*globel)->g_player->pos_x + RADIUS)
 	{
-		j = (*globel)->g_player->pos_y - RADIUS;
+		j = ((*globel)->g_player->pos_y) - RADIUS;
 		while (j <= (*globel)->g_player->pos_y + RADIUS)
 		{
 			if ((i - (*globel)->g_player->pos_x)
 				* (i - (*globel)->g_player->pos_x)
 				+ (j - (*globel)->g_player->pos_y)
 				* (j - (*globel)->g_player->pos_y) <= RADIUS * RADIUS)
-				mlx_pixel_put((*mlx)->mlx_ptr, (*mlx)->mlx_window, i, j, color);
+				mlx_pixel_put((*mlx)->mlx_ptr, (*mlx)->mlx_window, (i * MINIMAP_FACTOR), (j * MINIMAP_FACTOR), color);
 			j++;
 		}
 		i++;
@@ -134,7 +134,7 @@ void draw_line(t_globel **globle, int color)
 	py = (*globle)->g_player->pos_y;
 	while (line--)
 	{
-		mlx_pixel_put((*globle)->mlx->mlx_ptr, (*globle)->mlx->mlx_window, (int)px, (int)py, color);
+		mlx_pixel_put((*globle)->mlx->mlx_ptr, (*globle)->mlx->mlx_window, ((int)px * MINIMAP_FACTOR), ((int)py * MINIMAP_FACTOR), color);
 		px += x;
 		py += y;
 	}
@@ -149,6 +149,34 @@ void	calc_line(t_globel **globle, int color)
 	(*globle)->g_player->line_y
 		+= sin((*globle)->g_player->rotation_angle) * LINE_LENGTH;
 	draw_line(globle, color);
+}
+
+void draw_ray_line_xy(t_globel **globle, double ray_x1, double ray_y1,  double ray_x2, double ray_y2)
+{
+	int		dx;
+	int		dy;
+	int		line;
+	double	x;
+	double	y;
+	double	px;
+	double	py;
+
+	dx = ray_x2 - ray_x1;
+	dy = ray_y2 - ray_y1;
+	if (abs(dx) > abs(dy))
+		line = abs(dx);
+	else
+		line = abs(dy);
+	x = (double)dx / (double)line;
+	y = (double)dy / (double)line;
+	px = ray_x1;
+	py = ray_y1;
+	while (line--)
+	{
+		mlx_pixel_put((*globle)->mlx->mlx_ptr, (*globle)->mlx->mlx_window, (int)px, (int)py, RED);
+		px += x;
+		py += y;
+	}
 }
 
 void draw_ray_line(t_globel **globle, int ray_x, int ray_y)
@@ -173,7 +201,7 @@ void draw_ray_line(t_globel **globle, int ray_x, int ray_y)
 	py = (*globle)->g_player->pos_y;
 	while (line--)
 	{
-		mlx_pixel_put((*globle)->mlx->mlx_ptr, (*globle)->mlx->mlx_window, (int)px, (int)py, RED);
+		mlx_pixel_put((*globle)->mlx->mlx_ptr, (*globle)->mlx->mlx_window, ((int)px * MINIMAP_FACTOR), ((int)py * MINIMAP_FACTOR), RED);
 		px += x;
 		py += y;
 	}
@@ -201,8 +229,8 @@ double	normlize_angle(double rayangle)
 
 void	horiz(t_globel **globel, double rayangle)
 {
-	long	next_horiz_x;
-	long	next_horiz_y;
+	double	next_horiz_x;
+	double	next_horiz_y;
 
 	(*globel)->cast->horizontal->found_horiz_wall_hit = false;
 	// calc y_intercept
@@ -230,8 +258,8 @@ void	horiz(t_globel **globel, double rayangle)
 	next_horiz_x = (*globel)->cast->horizontal->x_intercept;
 	next_horiz_y = (*globel)->cast->horizontal->y_intercept;
 
-	if ((*globel)->cast->ray_facing_up)
-		next_horiz_y--;
+	// if ((*globel)->cast->ray_facing_up)
+	// 	next_horiz_y--;
 	long	tmp_horiz_x = next_horiz_x;
 	long	tmp_horiz_y = next_horiz_y;
 	while (next_horiz_x >= 0 && next_horiz_x
@@ -239,12 +267,11 @@ void	horiz(t_globel **globel, double rayangle)
 		&& next_horiz_y >= 0 && next_horiz_y
 		<= (*globel)->g_map->map_y * CUB_SIZE)
 	{
-		if (not_wall(globel, next_horiz_x, next_horiz_y))
+		if (not_wall(globel, next_horiz_x, next_horiz_y - (*globel)->cast->ray_facing_up ? 1 : 0))
 		{
 			(*globel)->cast->horizontal->found_horiz_wall_hit = true;
 			(*globel)->cast->horizontal->found_horiz_x = next_horiz_x;
 			(*globel)->cast->horizontal->found_horiz_y = next_horiz_y;
-			// draw_ray_line(globel, next_horiz_x, next_horiz_y);
 			return ;
 		}
 		else
@@ -275,8 +302,8 @@ void	where_i_looking_to(t_globel **globel, double rayangle)
 
 void	vertic(t_globel **globel, double rayangle)
 {
-	long	next_vertic_x;
-	long	next_vertic_y;
+	double	next_vertic_x;
+	double	next_vertic_y;
 
 	(*globel)->cast->vertical->found_vertic_wall_hit = false;
 	// calc x_intercept
@@ -304,17 +331,15 @@ void	vertic(t_globel **globel, double rayangle)
 	next_vertic_x = (*globel)->cast->vertical->x_intercept;
 	next_vertic_y = (*globel)->cast->vertical->y_intercept;
 
-	if ((*globel)->cast->ray_facing_left)
-		next_vertic_x--;
-
-
+	// if ((*globel)->cast->ray_facing_left)
+	// 	next_vertic_x--;
 
 	while (next_vertic_x >= 0 && next_vertic_x
 		<= (*globel)->g_map->map_x * CUB_SIZE
 		&& next_vertic_y >= 0 && next_vertic_y
 		<= (*globel)->g_map->map_y * CUB_SIZE)
 	{
-		if (not_wall(globel, next_vertic_x, next_vertic_y))
+		if (not_wall(globel, next_vertic_x - (*globel)->cast->ray_facing_left ? 1 : 0, next_vertic_y))
 		{
 			(*globel)->cast->vertical->found_vertic_wall_hit = true;
 			(*globel)->cast->vertical->found_vertic_x = next_vertic_x;
@@ -330,7 +355,7 @@ void	vertic(t_globel **globel, double rayangle)
 	}
 }
 
-double	distance(int x1, int y1, long x2, long y2)
+double	distance(double x1, double y1, double x2, double y2)
 {
 	return (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)));
 }
@@ -367,15 +392,36 @@ void	calc_horiz_vertic(t_globel **globel)
 	}
 }
 
+void	render_3d_projecte_walls(t_globel **globel, int column, double rayangle)
+{
+	double	ray_distance;
+	double	distance_p;
+	double	wall_strip_height;
+	int		top;
+	int		bottom;
+
+	ray_distance = (*globel)->cast->distance
+		* cos(rayangle - (*globel)->g_player->rotation_angle);
+	distance_p = ((float)(((*globel)->g_map->map_x * CUB_SIZE) / 2))
+		/ tan((*globel)->g_player->fov_angle / 2);
+	wall_strip_height = ((float)(CUB_SIZE / ray_distance)) * distance_p;
+	top = ((float)((*globel)->g_map->map_y * CUB_SIZE) / 2)
+		- ((float)wall_strip_height / 2);
+	bottom = ((float)wall_strip_height / 2)
+		+ ((float)(*globel)->g_map->map_y * CUB_SIZE) / 2;
+	while (top++ < bottom)
+		mlx_pixel_put((*globel)->mlx->mlx_ptr,
+			(*globel)->mlx->mlx_window, column, top, RED);
+}
+
 void	ray_casting(t_globel **globel, double rayangle, int column)
 {
-	(void)column;
 	rayangle = normlize_angle(rayangle);
 	where_i_looking_to(globel, rayangle);
 	horiz(globel, rayangle);
 	vertic(globel, rayangle);
 	calc_horiz_vertic(globel);
-	draw_ray_line(globel, (*globel)->cast->wall_hit_x, (*globel)->cast->wall_hit_y);
+	render_3d_projecte_walls(globel, column, rayangle);
 }
 
 void	draw_ray(t_globel **globel)
@@ -390,7 +436,6 @@ void	draw_ray(t_globel **globel)
 	// while (i < 1)
 	while (i < (*globel)->g_player->num_rays)
 	{
-		// calc_rays(globel, rayangle);
 		ray_casting(globel, rayangle, column);
 		rayangle += (*globel)->g_player->fov_angle / (*globel)->g_player->num_rays;
 		column++;
@@ -404,25 +449,25 @@ void	draw_window(t_mlx **mlx, t_globel **globel)
 	int	y;
 
 	y = 0;
+	draw_ray(globel);
 	while ((*globel)->g_map->map[y])
 	{
 		x = 0;
 		while ((*globel)->g_map->map[y][x]) 
 		{
 			if ((*globel)->g_map->map[y][x] == '1')
-				ft_draw_pixel(mlx, x * CUB_SIZE, y * CUB_SIZE, BLACK);
+				ft_draw_pixel(mlx, (x * CUB_SIZE * MINIMAP_FACTOR ), (y * CUB_SIZE * MINIMAP_FACTOR), BLACK);
 			else if ((*globel)->g_map->map[y][x] == '0'
 				|| ft_strchr("SWEN", (*globel)->g_map->map[y][x]))
-				ft_draw_pixel(mlx, x * CUB_SIZE, y * CUB_SIZE, WHITE);
+				ft_draw_pixel(mlx, (x * CUB_SIZE * MINIMAP_FACTOR ), (y * CUB_SIZE * MINIMAP_FACTOR), WHITE);
 			else if ((*globel)->g_map->map[y][x] == '2')
-				ft_draw_pixel(mlx, x * CUB_SIZE, y * CUB_SIZE, ORANGE);
+				ft_draw_pixel(mlx, (x * CUB_SIZE * MINIMAP_FACTOR), (y * CUB_SIZE * MINIMAP_FACTOR), ORANGE);
 			x++;
 		}
 		y++;
 	}
-	draw_ray(globel);
 	draw_circle(globel, mlx, RED);
-	// calc_line(globel, RED);
+	calc_line(globel, ORANGE);
 }
 
  void	ft_globle(t_globel **globle)
@@ -469,7 +514,7 @@ t_player	*ft_player(t_globel *globel)
 					(globel->g_map->map[y][x]);
 				globel->g_player->pos_x = (x + 0.5) * CUB_SIZE;
 				globel->g_player->pos_y = (y + 0.5) * CUB_SIZE;
-				globel->g_player->rotation_speed = 2 * (M_PI / 180);
+				globel->g_player->rotation_speed = 8 * (M_PI / 180);
 				globel->g_player->move_speed = MOVE_SPEED;
 				globel->g_player->fov_angle = ANGLE * (M_PI / 180);
 				globel->g_player->num_rays
@@ -551,13 +596,13 @@ int	keycode(int key, t_globel **globel)
 {
 	if (key == UP || key == KEY_W)
 		calc_up(globel);
-	else if (key == DOWN || key == KEY_S)
+	if (key == DOWN || key == KEY_S)
 		calc_down(globel);
-	else if (key == RIGHT || key == KEY_D)
+	if (key == RIGHT || key == KEY_D)
 		calc_right(globel);
-	else if (key == LEFT || key == KEY_A)
+	if (key == LEFT || key == KEY_A)
 		calc_left(globel);
-	else if (key == ESC)
+	if (key == ESC)
 		exit(1);
 	return (0);
 }
