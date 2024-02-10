@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/09 18:58:00 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/10 10:32:56 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@ bool	not_wall(t_globel **globel, int lx, int ly)
 
 	x = floor(lx / CUB_SIZE);
 	y = floor(ly / CUB_SIZE);
+	if (y == (*globel)->g_map->map_y)
+		y--;
+	if (x == (*globel)->g_map->map_x)
+		x--;
 	if ((*globel)->g_map->map[y][x] == '1')
 		return (true);
 	return (false);
@@ -228,14 +232,6 @@ void	horiz(t_globel **globel, double rayangle)
 
 	if ((*globel)->cast->ray_facing_up)
 		next_horiz_y--;
-	printf("x_intercept = %ld\n", (*globel)->cast->horizontal->x_intercept);
-	printf("y_intercept = %ld\n", (*globel)->cast->horizontal->y_intercept);
-	printf("x_step = %ld\n", (*globel)->cast->horizontal->x_step);
-	printf("y_step = %ld\n", (*globel)->cast->horizontal->y_step);
-	printf("play_x = %d\n", (*globel)->g_player->pos_x);
-	printf("play_y = %d\n", (*globel)->g_player->pos_y);
-	printf("angle = %f\n\n\n", rayangle);
-
 	long	tmp_horiz_x = next_horiz_x;
 	long	tmp_horiz_y = next_horiz_y;
 	while (next_horiz_x >= 0 && next_horiz_x
@@ -257,15 +253,8 @@ void	horiz(t_globel **globel, double rayangle)
 			tmp_horiz_y = next_horiz_y;
 			next_horiz_x += (*globel)->cast->horizontal->x_step;
 			next_horiz_y += (*globel)->cast->horizontal->y_step;
-			// printf("next_horiz_x = %ld\n", next_horiz_x);
-			// printf("next_horiz_y = %ld\n\n\n", next_horiz_y);
 		}
 	}
-	// (*globel)->cast->horizontal->found_horiz_wall_hit = true;
-	// (*globel)->cast->horizontal->found_horiz_x = tmp_horiz_x;
-	// (*globel)->cast->horizontal->found_horiz_y = tmp_horiz_y;
-	// printf("OK\n");
-	// draw_ray_line(globel, tmp_horiz_x, tmp_horiz_y);
 }
 
 void	where_i_looking_to(t_globel **globel, double rayangle)
@@ -318,13 +307,7 @@ void	vertic(t_globel **globel, double rayangle)
 	if ((*globel)->cast->ray_facing_left)
 		next_vertic_x--;
 
-	printf("x_intercept = %ld\n", (*globel)->cast->vertical->x_intercept);
-	printf("y_intercept = %ld\n", (*globel)->cast->vertical->y_intercept);
-	printf("x_step = %ld\n", (*globel)->cast->vertical->x_step);
-	printf("y_step = %ld\n", (*globel)->cast->vertical->y_step);
-	printf("play_x = %d\n", (*globel)->g_player->pos_x);
-	printf("play_y = %d\n", (*globel)->g_player->pos_y);
-	printf("angle = %f\n\n\n", rayangle);
+
 
 	while (next_vertic_x >= 0 && next_vertic_x
 		<= (*globel)->g_map->map_x * CUB_SIZE
@@ -343,8 +326,6 @@ void	vertic(t_globel **globel, double rayangle)
 		{
 			next_vertic_x += (*globel)->cast->vertical->x_step;
 			next_vertic_y += (*globel)->cast->vertical->y_step;
-			// printf("next_horiz_x = %ld\n", next_horiz_x);
-			// printf("next_horiz_y = %ld\n\n\n", next_horiz_y);
 		}
 	}
 }
