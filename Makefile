@@ -6,11 +6,11 @@
 #    By: osabir <osabir@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/03 10:43:21 by osabir            #+#    #+#              #
-#    Updated: 2024/02/10 13:07:54 by osabir           ###   ########.fr        #
+#    Updated: 2024/02/11 13:37:58 by osabir           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC		= cc 
+CC		= cc  -g
 
 FLAG	=  -Wall -Werror -Wextra -Ofast
 

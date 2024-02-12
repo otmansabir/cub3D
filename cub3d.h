@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/10 20:01:18 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/12 13:58:12 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,22 @@
 # define WALL_STRPI_WIDTH 1
 # define MINIMAP_FACTOR 0.2
 # define MOVE_SPEED 10.0
+# define ROTA_ANGLE 8
 # define LINE_LENGTH 30
 
 # define RED 0xed0505  
 # define ORANGE 0xf67c41
 # define WHITE 0xfff8f0
 # define BLACK 0x000000
+
+typedef struct s_key_event
+{
+	bool	key_front;
+	bool	key_back;
+	bool	key_right;
+	bool	key_left;
+	bool	key_esc;
+}			t_key_event;
 
 typedef struct s_map
 {
@@ -70,18 +80,16 @@ typedef struct s_map
 
 typedef struct s_player
 {
-	int		pos_x;
-	int		pos_y;
-	int		line_x;
-	int		line_y;
+	double		pos_x;
+	double		pos_y;
+	double		line_x;
+	double		line_y;
 	int		derction;
 	double	rotation_speed;
 	double	rotation_angle;
 	double	move_speed;
 	double	fov_angle;
 	int		num_rays;
-	int		x_move;
-	int		y_move;
 }			t_player;
 
 typedef struct s_color
@@ -105,6 +113,11 @@ typedef struct s_mlx
 {
 	void	*mlx_ptr;
 	void	*mlx_window;
+	void	*img_ptr;
+	char	*buffer;
+	int		bpp;
+	int		size_line;      
+	int		endian;      
 }			t_mlx;
 
 typedef	struct s_horizontal
@@ -151,6 +164,7 @@ typedef struct s_globel
 	struct s_player		*g_player;
 	struct s_done		*g_done;
 	struct s_cast		*cast;
+	struct s_key_event	*event;
 }			t_globel;
 
 char	*ft_strnstr(const char *hay, const char *need, size_t len);
