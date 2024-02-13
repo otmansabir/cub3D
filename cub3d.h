@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/13 10:09:40 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/13 18:57:40 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@
 # endif
 
 # define CUB_SIZE 32
-# define WIFTH 320
-# define HEIGHT 200
+
+# define WIDTH 640
+# define HEIGHT 400
 
 # define UP 126
 # define DOWN 125
@@ -47,7 +48,7 @@
 # define ANGLE 60
 # define WALL_STRPI_WIDTH 1
 # define MINIMAP_FACTOR 0.2
-# define MOVE_SPEED 10.0
+# define MOVE_SPEED 12.0
 # define ROTA_ANGLE 8
 # define LINE_LENGTH 30
 
@@ -120,6 +121,13 @@ typedef struct s_mlx
 	int		endian;      
 }			t_mlx;
 
+typedef struct s_xpm
+{
+	void	*img;
+	int		img_width;
+	int		img_height;
+}			t_xpm;
+
 typedef	struct s_horizontal
 {
 	double	x_intercept;
@@ -165,6 +173,10 @@ typedef struct s_globel
 	struct s_done		*g_done;
 	struct s_cast		*cast;
 	struct s_key_event	*event;
+	struct s_xpm		*so;
+	struct s_xpm		*no;
+	struct s_xpm		*we;
+	struct s_xpm		*ea;
 }			t_globel;
 
 char	*ft_strnstr(const char *hay, const char *need, size_t len);

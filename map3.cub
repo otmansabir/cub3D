@@ -1,10 +1,10 @@
-NO main.c
-SO main.c
-WE main.c
-EA main.c
+NO ./xpm/no.xpm
+SO ./xpm/so.xpm
+WE ./xpm/we.xpm
+EA ./xpm/ea.xpm
 
 F 77,92,53
-C 163,208,                            230
+C 163,208,230
 
         1111111111111111111111111
         1000000000110000000000001

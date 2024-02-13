@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/13 10:18:02 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/13 19:28:55 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,10 @@ void	ft_draw_pixel(t_globel **globel, int x, int y, int color)
 	int	j;
 
 	j = 0;
-	while (j < CUB_SIZE - 1)
+	while (j < CUB_SIZE)
 	{
 		i = 0;
-		while (i < CUB_SIZE - 1)
+		while (i < CUB_SIZE)
 		{
 			my_put_pixel(globel, x + i, y + j, color);
 			i++;
@@ -410,17 +410,48 @@ void	render_3d_projecte_walls(t_globel **globel, int column, double rayangle)
 	int		top;
 	int		bottom;
 
-	ray_distance = (*globel)->cast->distance
-		* cos(rayangle - (*globel)->g_player->rotation_angle);
+	ray_distance = (*globel)->cast->distance * cos(rayangle - (*globel)->g_player->rotation_angle);
+	
 	distance_p = ((float)(((*globel)->g_map->map_x * CUB_SIZE) / 2))
 		/ tan((*globel)->g_player->fov_angle / 2);
+		
 	wall_strip_height = ((float)(CUB_SIZE / ray_distance)) * distance_p;
-	top = ((float)((*globel)->g_map->map_y * CUB_SIZE) / 2)
-		- ((float)wall_strip_height / 2);
-	bottom = ((float)wall_strip_height / 2)
-		+ ((float)(*globel)->g_map->map_y * CUB_SIZE) / 2;
-	while (top++ < bottom)
-		my_put_pixel(globel, column, top, RED);
+	
+	top = ((float)((*globel)->g_map->map_y * CUB_SIZE) / 2) - ((float)wall_strip_height / 2);
+	
+	bottom = ((float)wall_strip_height / 2) + ((float)(*globel)->g_map->map_y * CUB_SIZE) / 2;
+	int i = 0;
+	while (i++ < top)
+		my_put_pixel(globel, column, i, (*globel)->g_map->f);
+	// int offset_x;
+	// int offset_y;
+	// if ((*globel)->cast->its_hit_vertical)
+	// 	offset_x = (int)(*globel)->cast->wall_hit_y % CUB_SIZE;
+	// else
+	// 	offset_x = (int)(*globel)->cast->wall_hit_x % CUB_SIZE;
+	// i = top;
+	// int color;
+	while (i++ < bottom)
+	{
+		
+		if ((*globel)->cast->its_hit_vertical)
+		{
+			// offset_y = (i - top) * ((float)(*globel)->no->img_height / wall_strip_height);
+			// unsigned int *img_data = (unsigned int *)(*globel)->no->img;
+			// color = img_data[((*globel)->no->img_width * offset_y) + offset_x];
+			my_put_pixel(globel, column, i, 0xffeeff);
+		}
+		else
+		{
+			// offset_y = (i - top) * ((float)(*globel)->so->img_height / wall_strip_height);
+			// unsigned int *img_data = (unsigned int *)(*globel)->no->img;
+			// color = img_data[((*globel)->so->img_width * offset_y) + offset_x];
+			my_put_pixel(globel, column, i, 0xffffff);
+		} 
+	}
+	i = bottom;
+	while (i++ < (*globel)->g_map->map_y * CUB_SIZE)
+		my_put_pixel(globel, column, i, (*globel)->g_map->c);
 }
 
 void	ray_casting(t_globel **globel, double rayangle, int column)
@@ -442,7 +473,6 @@ void	draw_ray(t_globel **globel)
 	column = 0;
 	i = 0;
 	rayangle = (*globel)->g_player->rotation_angle - ((*globel)->g_player->fov_angle / 2);
-	// while (i < 1)
 	while (i < (*globel)->g_player->num_rays)
 	{
 		ray_casting(globel, rayangle, column);
@@ -452,12 +482,14 @@ void	draw_ray(t_globel **globel)
 	}
 }
 
+
 void	draw_window(t_mlx **mlx, t_globel **globel)
 {
 	int	x;
 	int	y;
 
 	y = 0;
+	(void)mlx;
 	draw_ray(globel);
 	while ((*globel)->g_map->map[y])
 	{
@@ -551,10 +583,10 @@ t_player	*ft_player_malloc(t_player **player)
 
 void	ft_draw(t_globel **globel)
 {
-	// mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
-	// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
-	// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
-	// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
+	mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
+	mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
+	(*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
+	(*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
 	
 	draw_window(&(*globel)->mlx, globel);
 }
@@ -572,7 +604,7 @@ void	calc_up(t_globel **globel)
 	{
 		(*globel)->g_player->pos_x = x;
 		(*globel)->g_player->pos_y = y;
-		// ft_draw(globel);
+		ft_draw(globel);
 	}
 }
 void	calc_down(t_globel **globel)
@@ -588,17 +620,20 @@ void	calc_down(t_globel **globel)
 	{
 		(*globel)->g_player->pos_x = x;
 		(*globel)->g_player->pos_y = y;
+		ft_draw(globel);
 	}
 }
 void	calc_right(t_globel **globel)
 {
 	(*globel)->g_player->rotation_angle
 		+= (*globel)->g_player->rotation_speed;
+		ft_draw(globel);
 }
 void	calc_left(t_globel **globel)
 {
 	(*globel)->g_player->rotation_angle
 		-= (*globel)->g_player->rotation_speed;
+		ft_draw(globel);
 }
 
 int	key_release(int key, t_globel **globel)
@@ -607,73 +642,70 @@ int	key_release(int key, t_globel **globel)
 	if (key == UP || key == KEY_W)
 	{
 		(*globel)->event->key_front = false;
-		// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
-		// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
-		// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
-		ft_draw(globel);
 	}
 	if (key == DOWN || key == KEY_S)
 	{
 		(*globel)->event->key_back = false;
-		// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
-		// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
-		// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
-		ft_draw(globel);
 	}
 	if (key == RIGHT || key == KEY_D)
 	{
 		(*globel)->event->key_right = false;
-		// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
-		// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
-		// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
-		ft_draw(globel);
 	}
 	if (key == LEFT || key == KEY_A)
 	{
 		(*globel)->event->key_left = false;
-		// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
-		// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
-		// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
-		ft_draw(globel);
 	}
 	return (0);
 }
 
-int	key_press(int key, t_globel **globel)
+void	key_press(int key, t_globel **globel)
 {
-	// printf("OK\n");
+
 	if (key == UP || key == KEY_W)
 	{
 		(*globel)->event->key_front = true;
-		calc_up(globel);
 	}
 	if (key == DOWN || key == KEY_S)
 	{
 		(*globel)->event->key_back = true;
-		calc_down(globel);
 	}
 	if (key == RIGHT || key == KEY_D)
 	{
 		(*globel)->event->key_right = true;
-		calc_right(globel);
 	}
 	if (key == LEFT || key == KEY_A)
 	{
 		(*globel)->event->key_left = true;
-		calc_left(globel);
 	}
-	if (key == ESC)
-		exit(0);
-	return (0);
+
+}
+void p(t_key_event* ev)
+{
+	printf("%d %d %d %d %d\n",ev->key_back,ev->key_esc,ev->key_front,ev->key_left,ev->key_right);
 }
 
 int	keycode(int key, t_globel **globel)
 {
 	(void)key;
-	mlx_hook((*globel)->mlx->mlx_window, 2, 0, &key_press, globel);
-	mlx_hook((*globel)->mlx->mlx_window, 3, 0, &key_release, globel);
-
-
+	key_press(key, globel);
+	if ((*globel)->event->key_front)
+	{
+		calc_up(globel);
+	}
+	if ((*globel)->event->key_back)
+	{
+		calc_down(globel);
+	}
+	if ((*globel)->event->key_right)
+	{
+		calc_right(globel);
+	}
+	if ((*globel)->event->key_left)
+	{
+		calc_left(globel);
+	}
+	if (key == ESC)
+		exit(0);
 	return (0);
 }
 
@@ -701,8 +733,16 @@ t_cast	*malloc_cast(void)
 	return (cast);
 }
 
-t_key_event *make_null(t_key_event *event)
+
+
+
+t_key_event *make_null(void)
 {
+	t_key_event	*event;
+	
+	event = malloc(sizeof(t_key_event));
+	if (!event)
+		exit(1);
 	event->key_front = false;
 	event->key_back = false;
 	event->key_right = false;
@@ -711,6 +751,44 @@ t_key_event *make_null(t_key_event *event)
 	return (event);
 }
 
+void	ft_get_img_xpm(t_globel **globel)
+{
+	t_xpm	*no;
+	t_xpm	*so;
+	t_xpm	*we;
+	t_xpm	*ea;
+
+	no = malloc(sizeof(t_xpm));
+	if (!no)
+		exit(1);
+	so = malloc(sizeof(t_xpm));
+	if (!so)
+		exit(1);
+	we = malloc(sizeof(t_xpm));
+	if (!we)
+		exit(1);
+	ea = malloc(sizeof(t_xpm));
+	if (!ea)
+		exit(1);
+	no->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->no, &no->img_width, &no->img_height);
+	if (!no->img)
+		exit(1);
+	so->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->no, &no->img_width, &no->img_height);
+	if (!so->img)
+		exit(1);
+	we->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->no, &no->img_width, &no->img_height);
+	if (!we->img)
+		exit(1);
+	ea->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->no, &no->img_width, &no->img_height);
+	if (!ea->img)
+		exit(1);
+	(*globel)->no = no;
+	(*globel)->so = so;
+	(*globel)->we = we;
+	(*globel)->ea = ea;
+}
+
+
 int main(int ac, char **av)
 {
 	t_globel	*globel;
@@ -718,7 +796,6 @@ int main(int ac, char **av)
 	t_map		*map;
 	t_done		done;
 	t_mlx		*mlx;
-	t_key_event	event;
 
 	map = NULL;
 	mlx = NULL;
@@ -731,29 +808,27 @@ int main(int ac, char **av)
 	globel->g_map = ft_malloc(&map);
 	globel->g_done = give_value(&done);
 	globel->g_map = parsing_file(av[1], globel);
-	(void)player;
-	(void)mlx;
-	(void)done;
-	(void)map;
-	(void)globel;
 	globel->g_player = ft_player_malloc(&player);
 	globel->g_player = ft_player(globel);
-	globel->event = make_null(&event);
+	globel->event = make_null();
 	mlx = malloc(sizeof(t_mlx));
 	if (!mlx)
 		exit(1);
 	globel->cast = malloc_cast();
 	mlx->mlx_ptr = mlx_init();
+	
 	mlx->mlx_window = mlx_new_window(mlx->mlx_ptr,
 		(globel->g_map->map_x * CUB_SIZE),
 		(globel->g_map->map_y * CUB_SIZE), "CUB3D");
 	globel->mlx = mlx;
 	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, globel->g_map->map_x * CUB_SIZE, globel->g_map->map_y * CUB_SIZE);
 	mlx->buffer = mlx_get_data_addr(mlx->img_ptr, &mlx->bpp, &mlx->size_line, &mlx->endian);
+	ft_get_img_xpm(&globel);
 	draw_window(&mlx, &globel);
 
-
-	mlx_key_hook(mlx->mlx_window, &keycode, &globel);
+	// mlx_key_hook(mlx->mlx_window, &keycode, &globel);
+	mlx_hook(globel->mlx->mlx_window, 2, 0, &keycode, &globel);
+	mlx_hook(globel->mlx->mlx_window, 3, 0, &key_release, &globel);
 
  	mlx_loop(mlx->mlx_ptr);
 	return (0);
