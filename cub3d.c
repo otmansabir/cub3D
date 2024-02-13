@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/12 13:56:54 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/13 10:18:02 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,28 +33,14 @@ void	ft_putchar_fd(char c, int fd)
 	write(fd, &c, 1);
 }
 
-void	my_put_pixel(t_globel **globel, int x, int y, int color)
+void my_put_pixel(t_globel **globel, int x, int y, int color)
 {
-	int	offset;
-	static int i;
-	
-	offset = ((*globel)->mlx->size_line * y) + (x * ((*globel)->mlx->bpp / 8));
-	int calc_x = x;
-	int pbb = (*globel)->mlx->bpp / 8;
-	int calc_y = ((*globel)->mlx->size_line * y);
-	printf("x = %d, x = %d\n", x, calc_x * pbb);
-	printf("bpp / 8 = %d\n", pbb);
-	printf("y = %d, y = %d\n", y, calc_y);
-	printf("offset = %d\n\n\n", offset);
-	if (i++ == 2)
-		exit(0);
-	if (offset + 1 >= (*globel)->mlx->size_line * ((*globel)->g_map->map_y))
-		offset -= 32;
-	if (offset < 0)
-		offset = 0;
-	// printf("offset  = %d\n", offset );
-	(*globel)->mlx->buffer[offset] = color;
+	char *offset;
+	offset = (*globel)->mlx->buffer + ((*globel)->mlx->size_line * y) + (x * ((*globel)->mlx->bpp / 8));
+	if (x >= 0 && x < (*globel)->g_map->map_x * CUB_SIZE && y >= 0 && y < (*globel)->g_map->map_y * CUB_SIZE)
+		*(unsigned int *)offset = color;
 }
+
 
 void	ft_putstr_fd(char *s, int fd)
 {
@@ -565,7 +551,11 @@ t_player	*ft_player_malloc(t_player **player)
 
 void	ft_draw(t_globel **globel)
 {
-	mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
+	// mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
+	// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
+	// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
+	// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
+	
 	draw_window(&(*globel)->mlx, globel);
 }
 
@@ -617,21 +607,33 @@ int	key_release(int key, t_globel **globel)
 	if (key == UP || key == KEY_W)
 	{
 		(*globel)->event->key_front = false;
+		// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
+		// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
+		// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
 		ft_draw(globel);
 	}
 	if (key == DOWN || key == KEY_S)
 	{
 		(*globel)->event->key_back = false;
+		// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
+		// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
+		// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
 		ft_draw(globel);
 	}
 	if (key == RIGHT || key == KEY_D)
 	{
 		(*globel)->event->key_right = false;
+		// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
+		// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
+		// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
 		ft_draw(globel);
 	}
 	if (key == LEFT || key == KEY_A)
 	{
 		(*globel)->event->key_left = false;
+		// mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
+		// (*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
+		// (*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
 		ft_draw(globel);
 	}
 	return (0);

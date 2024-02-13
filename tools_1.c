@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/04 14:05:48 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/04 14:05:49 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/13 10:16:22 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,7 +346,7 @@ char	*new_line(char *line, int size_map)
 	char	*map_line;
 	int		i;
 
-	map_line = malloc(size_map);
+	map_line = malloc((size_map + 1) * sizeof(char *));
 	if (!map_line)
 		exit(1);
 	i = 0;
@@ -373,16 +373,22 @@ char	**make_map_same_size(char **map, int len, int size_map)
 	int		i;
 
 	i = 0;
-	line = (char **)malloc((size_map + 1) * (sizeof(char **)));
+	line = malloc((size_map + 1) * sizeof(char *));
 	if (!line)
 		exit(1);
 	while (map[i])
 	{
 		line[i] = new_line(map[i], len);
-		free(map[i]);
 		i++;
 	}
 	line[i] = NULL;
+	i = 0;
+	while (map[i])
+	{
+		free(map[i]);
+		map[i] = NULL;
+		i++;
+	}
 	return (line);
 }
 
