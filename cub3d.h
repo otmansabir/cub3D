@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/13 18:57:40 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/14 10:02:22 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@
 
 # define CUB_SIZE 32
 
-# define WIDTH 640
-# define HEIGHT 400
+# define X_WIDTH 1280
+# define Y_HEIGHT 800
 
 # define UP 126
 # define DOWN 125

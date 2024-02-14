@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/13 19:28:55 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/14 10:42:09 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void my_put_pixel(t_globel **globel, int x, int y, int color)
 {
 	char *offset;
 	offset = (*globel)->mlx->buffer + ((*globel)->mlx->size_line * y) + (x * ((*globel)->mlx->bpp / 8));
-	if (x >= 0 && x < (*globel)->g_map->map_x * CUB_SIZE && y >= 0 && y < (*globel)->g_map->map_y * CUB_SIZE)
+	if (x >= 0 && x < X_WIDTH && y >= 0 && y < Y_HEIGHT)
 		*(unsigned int *)offset = color;
 }
 
@@ -412,45 +412,50 @@ void	render_3d_projecte_walls(t_globel **globel, int column, double rayangle)
 
 	ray_distance = (*globel)->cast->distance * cos(rayangle - (*globel)->g_player->rotation_angle);
 	
-	distance_p = ((float)(((*globel)->g_map->map_x * CUB_SIZE) / 2))
+	distance_p = ((float)((X_WIDTH) / 2))
 		/ tan((*globel)->g_player->fov_angle / 2);
 		
 	wall_strip_height = ((float)(CUB_SIZE / ray_distance)) * distance_p;
 	
-	top = ((float)((*globel)->g_map->map_y * CUB_SIZE) / 2) - ((float)wall_strip_height / 2);
+	top = ((float)(Y_HEIGHT) / 2) - ((float)wall_strip_height / 2);
 	
-	bottom = ((float)wall_strip_height / 2) + ((float)(*globel)->g_map->map_y * CUB_SIZE) / 2;
+	bottom = ((float)wall_strip_height / 2) + ((float)(Y_HEIGHT) / 2);
 	int i = 0;
 	while (i++ < top)
 		my_put_pixel(globel, column, i, (*globel)->g_map->f);
-	// int offset_x;
-	// int offset_y;
-	// if ((*globel)->cast->its_hit_vertical)
-	// 	offset_x = (int)(*globel)->cast->wall_hit_y % CUB_SIZE;
-	// else
-	// 	offset_x = (int)(*globel)->cast->wall_hit_x % CUB_SIZE;
-	// i = top;
-	// int color;
+	int offset_x;
+	int offset_y;
+	if ((*globel)->cast->its_hit_vertical)
+		offset_x = (int)(*globel)->cast->wall_hit_y % CUB_SIZE;
+	else
+		offset_x = (int)(*globel)->cast->wall_hit_x % CUB_SIZE;
+	i = top;
+	int color;
+	int factor;
 	while (i++ < bottom)
 	{
 		
 		if ((*globel)->cast->its_hit_vertical)
 		{
-			// offset_y = (i - top) * ((float)(*globel)->no->img_height / wall_strip_height);
-			// unsigned int *img_data = (unsigned int *)(*globel)->no->img;
-			// color = img_data[((*globel)->no->img_width * offset_y) + offset_x];
-			my_put_pixel(globel, column, i, 0xffeeff);
+			factor = (*globel)->no->img_width / CUB_SIZE;
+			offset_x *= factor;
+			offset_y = (i - top) * ((float)(*globel)->no->img_height / wall_strip_height);
+			unsigned int *img_data = (unsigned int *)(*globel)->no->img;
+			color = img_data[((*globel)->no->img_width * offset_y) + offset_x];
+			my_put_pixel(globel, column, i, color);
 		}
 		else
 		{
-			// offset_y = (i - top) * ((float)(*globel)->so->img_height / wall_strip_height);
-			// unsigned int *img_data = (unsigned int *)(*globel)->no->img;
-			// color = img_data[((*globel)->so->img_width * offset_y) + offset_x];
-			my_put_pixel(globel, column, i, 0xffffff);
+			factor = (*globel)->so->img_width / CUB_SIZE;
+			offset_x *= factor;
+			offset_y = (i - top) * ((float)(*globel)->so->img_height / wall_strip_height);
+			unsigned int *img_data = (unsigned int *)(*globel)->no->img;
+			color = img_data[((*globel)->so->img_width * offset_y) + offset_x];
+			my_put_pixel(globel, column, i, color);
 		} 
 	}
 	i = bottom;
-	while (i++ < (*globel)->g_map->map_y * CUB_SIZE)
+	while (i++ < (float)(Y_HEIGHT))
 		my_put_pixel(globel, column, i, (*globel)->g_map->c);
 }
 
@@ -560,7 +565,7 @@ t_player	*ft_player(t_globel *globel)
 				globel->g_player->move_speed = MOVE_SPEED;
 				globel->g_player->fov_angle = ANGLE * (M_PI / 180);
 				globel->g_player->num_rays
-					= (globel->g_map->map_x * CUB_SIZE) / WALL_STRPI_WIDTH;
+					= X_WIDTH / WALL_STRPI_WIDTH;
 				break ;
 			}
 			x++;
@@ -585,7 +590,7 @@ void	ft_draw(t_globel **globel)
 {
 	mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
 	mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
-	(*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->map_x * CUB_SIZE, (*globel)->g_map->map_y * CUB_SIZE);
+	(*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, X_WIDTH, Y_HEIGHT);
 	(*globel)->mlx->buffer = mlx_get_data_addr((*globel)->mlx->img_ptr, &(*globel)->mlx->bpp, &(*globel)->mlx->size_line, &(*globel)->mlx->endian);
 	
 	draw_window(&(*globel)->mlx, globel);
@@ -817,11 +822,9 @@ int main(int ac, char **av)
 	globel->cast = malloc_cast();
 	mlx->mlx_ptr = mlx_init();
 	
-	mlx->mlx_window = mlx_new_window(mlx->mlx_ptr,
-		(globel->g_map->map_x * CUB_SIZE),
-		(globel->g_map->map_y * CUB_SIZE), "CUB3D");
+	mlx->mlx_window = mlx_new_window(mlx->mlx_ptr, X_WIDTH, Y_HEIGHT, "CUB3D");
 	globel->mlx = mlx;
-	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, globel->g_map->map_x * CUB_SIZE, globel->g_map->map_y * CUB_SIZE);
+	mlx->img_ptr = mlx_new_image(mlx->mlx_ptr, X_WIDTH, Y_HEIGHT);
 	mlx->buffer = mlx_get_data_addr(mlx->img_ptr, &mlx->bpp, &mlx->size_line, &mlx->endian);
 	ft_get_img_xpm(&globel);
 	draw_window(&mlx, &globel);
