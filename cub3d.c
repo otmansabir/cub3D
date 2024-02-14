@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/14 10:42:09 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/14 13:31:55 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -402,6 +402,66 @@ void	calc_horiz_vertic(t_globel **globel)
 	}
 }
 
+// void	render_3d_projecte_walls(t_globel **globel, int column, double rayangle)
+// {
+// 	double	ray_distance;
+// 	double	distance_p;
+// 	double	wall_strip_height;
+// 	int		top;
+// 	int		bottom;
+
+// 	ray_distance = (*globel)->cast->distance * cos(rayangle - (*globel)->g_player->rotation_angle);
+	
+// 	distance_p = ((float)((X_WIDTH) / 2))
+// 		/ tan((*globel)->g_player->fov_angle / 2);
+		
+// 	wall_strip_height = ((float)(CUB_SIZE / ray_distance)) * distance_p;
+	
+// 	top = ((float)(Y_HEIGHT) / 2) - ((float)wall_strip_height / 2);
+	
+// 	bottom = ((float)wall_strip_height / 2) + ((float)(Y_HEIGHT) / 2);
+// 	int i = 0;
+// 	while (i++ < top)
+// 		my_put_pixel(globel, column, i, (*globel)->g_map->f);
+// 	double offset_x;
+// 	double offset_y;
+// 	float factor;
+// 	unsigned int *img_data;
+// 	struct s_xpm *image;
+// 	if ((*globel)->cast->its_hit_vertical)
+// 	{
+// 		image = (*globel)->no;
+// 		img_data = (unsigned int *)(*globel)->no->img;
+// 	}
+// 	else
+// 	{
+// 		image = (*globel)->so;
+// 		img_data = (unsigned int *)(*globel)->so->img;
+// 	}
+// 	factor = ((float)image->img_width / CUB_SIZE);
+// 	if ((*globel)->cast->its_hit_vertical)
+// 		offset_x = ((int)((*globel)->cast->wall_hit_y * factor)) % image->img_width;
+// 	else
+// 		offset_x = ((int)((*globel)->cast->wall_hit_x * factor)) % image->img_width;
+	
+// 	i = top;
+// 	unsigned int color;
+// 	printf("%d %d\n", image->img_width, image->img_height);
+// 	// offset_x *= factor;
+// 	while (i < bottom)
+// 	{
+// 		offset_y = ((float)(i - top)) * (image->img_height / wall_strip_height);
+// 		// printf("w %d y %f x %f index %d\n",image->img_width, offset_y, offset_x, (int)((image->img_width * offset_y) + offset_x));
+// 		color = img_data[(int)((image->img_width * offset_y) + offset_x)];
+// 		// if ((*globel)->cast->its_hit_vertical)
+// 		my_put_pixel(globel, column, i, color);
+// 		i++;
+// 	}
+// 	i = bottom;
+// 	while (i++ < (float)(Y_HEIGHT))
+// 		my_put_pixel(globel, column, i, (*globel)->g_map->c);
+// }
+
 void	render_3d_projecte_walls(t_globel **globel, int column, double rayangle)
 {
 	double	ray_distance;
@@ -778,13 +838,13 @@ void	ft_get_img_xpm(t_globel **globel)
 	no->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->no, &no->img_width, &no->img_height);
 	if (!no->img)
 		exit(1);
-	so->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->no, &no->img_width, &no->img_height);
+	so->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->so, &so->img_width, &so->img_height);
 	if (!so->img)
 		exit(1);
-	we->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->no, &no->img_width, &no->img_height);
+	we->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->we, &we->img_width, &we->img_height);
 	if (!we->img)
 		exit(1);
-	ea->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->no, &no->img_width, &no->img_height);
+	ea->img =  mlx_xpm_file_to_image((*globel)->mlx->mlx_ptr, (*globel)->g_map->ea, &ea->img_width, &ea->img_height);
 	if (!ea->img)
 		exit(1);
 	(*globel)->no = no;
