@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 10:23:35 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/14 13:31:55 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/15 13:12:11 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -402,66 +402,6 @@ void	calc_horiz_vertic(t_globel **globel)
 	}
 }
 
-// void	render_3d_projecte_walls(t_globel **globel, int column, double rayangle)
-// {
-// 	double	ray_distance;
-// 	double	distance_p;
-// 	double	wall_strip_height;
-// 	int		top;
-// 	int		bottom;
-
-// 	ray_distance = (*globel)->cast->distance * cos(rayangle - (*globel)->g_player->rotation_angle);
-	
-// 	distance_p = ((float)((X_WIDTH) / 2))
-// 		/ tan((*globel)->g_player->fov_angle / 2);
-		
-// 	wall_strip_height = ((float)(CUB_SIZE / ray_distance)) * distance_p;
-	
-// 	top = ((float)(Y_HEIGHT) / 2) - ((float)wall_strip_height / 2);
-	
-// 	bottom = ((float)wall_strip_height / 2) + ((float)(Y_HEIGHT) / 2);
-// 	int i = 0;
-// 	while (i++ < top)
-// 		my_put_pixel(globel, column, i, (*globel)->g_map->f);
-// 	double offset_x;
-// 	double offset_y;
-// 	float factor;
-// 	unsigned int *img_data;
-// 	struct s_xpm *image;
-// 	if ((*globel)->cast->its_hit_vertical)
-// 	{
-// 		image = (*globel)->no;
-// 		img_data = (unsigned int *)(*globel)->no->img;
-// 	}
-// 	else
-// 	{
-// 		image = (*globel)->so;
-// 		img_data = (unsigned int *)(*globel)->so->img;
-// 	}
-// 	factor = ((float)image->img_width / CUB_SIZE);
-// 	if ((*globel)->cast->its_hit_vertical)
-// 		offset_x = ((int)((*globel)->cast->wall_hit_y * factor)) % image->img_width;
-// 	else
-// 		offset_x = ((int)((*globel)->cast->wall_hit_x * factor)) % image->img_width;
-	
-// 	i = top;
-// 	unsigned int color;
-// 	printf("%d %d\n", image->img_width, image->img_height);
-// 	// offset_x *= factor;
-// 	while (i < bottom)
-// 	{
-// 		offset_y = ((float)(i - top)) * (image->img_height / wall_strip_height);
-// 		// printf("w %d y %f x %f index %d\n",image->img_width, offset_y, offset_x, (int)((image->img_width * offset_y) + offset_x));
-// 		color = img_data[(int)((image->img_width * offset_y) + offset_x)];
-// 		// if ((*globel)->cast->its_hit_vertical)
-// 		my_put_pixel(globel, column, i, color);
-// 		i++;
-// 	}
-// 	i = bottom;
-// 	while (i++ < (float)(Y_HEIGHT))
-// 		my_put_pixel(globel, column, i, (*globel)->g_map->c);
-// }
-
 void	render_3d_projecte_walls(t_globel **globel, int column, double rayangle)
 {
 	double	ray_distance;
@@ -481,42 +421,50 @@ void	render_3d_projecte_walls(t_globel **globel, int column, double rayangle)
 	
 	bottom = ((float)wall_strip_height / 2) + ((float)(Y_HEIGHT) / 2);
 	int i = 0;
-	while (i++ < top)
-		my_put_pixel(globel, column, i, (*globel)->g_map->f);
-	int offset_x;
-	int offset_y;
-	if ((*globel)->cast->its_hit_vertical)
-		offset_x = (int)(*globel)->cast->wall_hit_y % CUB_SIZE;
-	else
-		offset_x = (int)(*globel)->cast->wall_hit_x % CUB_SIZE;
-	i = top;
-	int color;
-	int factor;
-	while (i++ < bottom)
+	while (i < top)
 	{
-		
+		my_put_pixel(globel, column, i, (*globel)->g_map->c);
+		i++;
+	}
+	int offset_x, offset_y, factor, color;
+	unsigned int *img_data;
+	if ((*globel)->cast->its_hit_vertical)
+	{
+		offset_x = (int)(*globel)->cast->wall_hit_y % CUB_SIZE;
+		factor = (*globel)->no->img_width / CUB_SIZE;
+		offset_x *= factor;
+		img_data = (unsigned int *)(*globel)->no->img_addr;
+	}
+	else
+	{
+		offset_x = (int)(*globel)->cast->wall_hit_x % CUB_SIZE;
+		factor = (*globel)->so->img_width / CUB_SIZE;
+		offset_x *= factor;
+		img_data = (unsigned int *)(*globel)->so->img_addr;
+	}
+	i = top;
+	while (i < bottom)
+	{
 		if ((*globel)->cast->its_hit_vertical)
 		{
-			factor = (*globel)->no->img_width / CUB_SIZE;
-			offset_x *= factor;
 			offset_y = (i - top) * ((float)(*globel)->no->img_height / wall_strip_height);
-			unsigned int *img_data = (unsigned int *)(*globel)->no->img;
 			color = img_data[((*globel)->no->img_width * offset_y) + offset_x];
 			my_put_pixel(globel, column, i, color);
 		}
 		else
 		{
-			factor = (*globel)->so->img_width / CUB_SIZE;
-			offset_x *= factor;
 			offset_y = (i - top) * ((float)(*globel)->so->img_height / wall_strip_height);
-			unsigned int *img_data = (unsigned int *)(*globel)->no->img;
 			color = img_data[((*globel)->so->img_width * offset_y) + offset_x];
 			my_put_pixel(globel, column, i, color);
-		} 
+		}
+		i++;
 	}
 	i = bottom;
-	while (i++ < (float)(Y_HEIGHT))
-		my_put_pixel(globel, column, i, (*globel)->g_map->c);
+	while (i < (float)(Y_HEIGHT))
+	{
+		my_put_pixel(globel, column, i, (*globel)->g_map->f);
+		i++;
+	}
 }
 
 void	ray_casting(t_globel **globel, double rayangle, int column)
@@ -550,30 +498,30 @@ void	draw_ray(t_globel **globel)
 
 void	draw_window(t_mlx **mlx, t_globel **globel)
 {
-	int	x;
-	int	y;
+	// int	x;
+	// int	y;
 
-	y = 0;
+	// y = 0;
 	(void)mlx;
 	draw_ray(globel);
-	while ((*globel)->g_map->map[y])
-	{
-		x = 0;
-		while ((*globel)->g_map->map[y][x]) 
-		{
-			if ((*globel)->g_map->map[y][x] == '1')
-				ft_draw_pixel(globel, (x * CUB_SIZE * MINIMAP_FACTOR ), (y * CUB_SIZE * MINIMAP_FACTOR), BLACK);
-			else if ((*globel)->g_map->map[y][x] == '0'
-				|| ft_strchr("SWEN", (*globel)->g_map->map[y][x]))
-				ft_draw_pixel(globel, (x * CUB_SIZE * MINIMAP_FACTOR ), (y * CUB_SIZE * MINIMAP_FACTOR), WHITE);
-			else if ((*globel)->g_map->map[y][x] == '2')
-				ft_draw_pixel(globel, (x * CUB_SIZE * MINIMAP_FACTOR), (y * CUB_SIZE * MINIMAP_FACTOR), ORANGE);
-			x++;
-		}
-		y++;
-	}
-	draw_circle(globel, mlx, RED);
-	calc_line(globel, ORANGE);
+	// while ((*globel)->g_map->map[y])
+	// {
+	// 	x = 0;
+	// 	while ((*globel)->g_map->map[y][x]) 
+	// 	{
+	// 		if ((*globel)->g_map->map[y][x] == '1')
+	// 			ft_draw_pixel(globel, (x * CUB_SIZE * MINIMAP_FACTOR ), (y * CUB_SIZE * MINIMAP_FACTOR), BLACK);
+	// 		else if ((*globel)->g_map->map[y][x] == '0'
+	// 			|| ft_strchr("SWEN", (*globel)->g_map->map[y][x]))
+	// 			ft_draw_pixel(globel, (x * CUB_SIZE * MINIMAP_FACTOR ), (y * CUB_SIZE * MINIMAP_FACTOR), WHITE);
+	// 		else if ((*globel)->g_map->map[y][x] == '2')
+	// 			ft_draw_pixel(globel, (x * CUB_SIZE * MINIMAP_FACTOR), (y * CUB_SIZE * MINIMAP_FACTOR), ORANGE);
+	// 		x++;
+	// 	}
+	// 	y++;
+	// }
+	// draw_circle(globel, mlx, RED);
+	// calc_line(globel, ORANGE);
 	mlx_put_image_to_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window, (*globel)->mlx->img_ptr, 0,0);
 }
 
@@ -648,6 +596,7 @@ t_player	*ft_player_malloc(t_player **player)
 
 void	ft_draw(t_globel **globel)
 {
+	(*globel)->event->draws = false;
 	mlx_destroy_image((*globel)->mlx->mlx_ptr, (*globel)->mlx->img_ptr);
 	mlx_clear_window((*globel)->mlx->mlx_ptr, (*globel)->mlx->mlx_window);
 	(*globel)->mlx->img_ptr = mlx_new_image((*globel)->mlx->mlx_ptr, X_WIDTH, Y_HEIGHT);
@@ -669,7 +618,7 @@ void	calc_up(t_globel **globel)
 	{
 		(*globel)->g_player->pos_x = x;
 		(*globel)->g_player->pos_y = y;
-		ft_draw(globel);
+		(*globel)->event->draws = true;
 	}
 }
 void	calc_down(t_globel **globel)
@@ -685,92 +634,67 @@ void	calc_down(t_globel **globel)
 	{
 		(*globel)->g_player->pos_x = x;
 		(*globel)->g_player->pos_y = y;
-		ft_draw(globel);
+		(*globel)->event->draws = true;
 	}
 }
 void	calc_right(t_globel **globel)
 {
 	(*globel)->g_player->rotation_angle
 		+= (*globel)->g_player->rotation_speed;
-		ft_draw(globel);
+	(*globel)->event->draws = true;
+
 }
 void	calc_left(t_globel **globel)
 {
 	(*globel)->g_player->rotation_angle
 		-= (*globel)->g_player->rotation_speed;
-		ft_draw(globel);
+	(*globel)->event->draws = true;
+
 }
 
 int	key_release(int key, t_globel **globel)
 {
 	
 	if (key == UP || key == KEY_W)
-	{
 		(*globel)->event->key_front = false;
-	}
 	if (key == DOWN || key == KEY_S)
-	{
 		(*globel)->event->key_back = false;
-	}
 	if (key == RIGHT || key == KEY_D)
-	{
 		(*globel)->event->key_right = false;
-	}
 	if (key == LEFT || key == KEY_A)
-	{
 		(*globel)->event->key_left = false;
-	}
 	return (0);
 }
 
-void	key_press(int key, t_globel **globel)
+int	key_press(int key, t_globel **globel)
 {
 
 	if (key == UP || key == KEY_W)
-	{
 		(*globel)->event->key_front = true;
-	}
 	if (key == DOWN || key == KEY_S)
-	{
 		(*globel)->event->key_back = true;
-	}
 	if (key == RIGHT || key == KEY_D)
-	{
 		(*globel)->event->key_right = true;
-	}
 	if (key == LEFT || key == KEY_A)
-	{
 		(*globel)->event->key_left = true;
-	}
-
-}
-void p(t_key_event* ev)
-{
-	printf("%d %d %d %d %d\n",ev->key_back,ev->key_esc,ev->key_front,ev->key_left,ev->key_right);
-}
-
-int	keycode(int key, t_globel **globel)
-{
-	(void)key;
-	key_press(key, globel);
-	if ((*globel)->event->key_front)
-	{
-		calc_up(globel);
-	}
-	if ((*globel)->event->key_back)
-	{
-		calc_down(globel);
-	}
-	if ((*globel)->event->key_right)
-	{
-		calc_right(globel);
-	}
-	if ((*globel)->event->key_left)
-	{
-		calc_left(globel);
-	}
 	if (key == ESC)
 		exit(0);
+	return (0);
+}
+
+
+int	draw_win(t_globel **globel)
+{
+	if ((*globel)->event->key_front)
+		calc_up(globel);
+	if ((*globel)->event->key_back)
+		calc_down(globel);
+	if ((*globel)->event->key_right)
+		calc_right(globel);
+	if ((*globel)->event->key_left)
+		calc_left(globel);
+	if ((*globel)->event->draws)
+		ft_draw(globel);
 	return (0);
 }
 
@@ -812,7 +736,7 @@ t_key_event *make_null(void)
 	event->key_back = false;
 	event->key_right = false;
 	event->key_left = false;
-	event->key_esc = false;
+	event->draws = false;
 	return (event);
 }
 
@@ -848,9 +772,13 @@ void	ft_get_img_xpm(t_globel **globel)
 	if (!ea->img)
 		exit(1);
 	(*globel)->no = no;
+	no->img_addr = mlx_get_data_addr((*globel)->no->img, &(*globel)->no->bpp, &(*globel)->no->size_line, &(*globel)->no->endian);
 	(*globel)->so = so;
+	so->img_addr = mlx_get_data_addr((*globel)->so->img, &(*globel)->so->bpp, &(*globel)->so->size_line, &(*globel)->so->endian);
 	(*globel)->we = we;
+	we->img_addr = mlx_get_data_addr((*globel)->we->img, &(*globel)->we->bpp, &(*globel)->we->size_line, &(*globel)->we->endian);
 	(*globel)->ea = ea;
+	ea->img_addr = mlx_get_data_addr((*globel)->ea->img, &(*globel)->ea->bpp, &(*globel)->ea->size_line, &(*globel)->ea->endian);
 }
 
 
@@ -890,8 +818,9 @@ int main(int ac, char **av)
 	draw_window(&mlx, &globel);
 
 	// mlx_key_hook(mlx->mlx_window, &keycode, &globel);
-	mlx_hook(globel->mlx->mlx_window, 2, 0, &keycode, &globel);
+	mlx_hook(globel->mlx->mlx_window, 2, 0, &key_press, &globel);
 	mlx_hook(globel->mlx->mlx_window, 3, 0, &key_release, &globel);
+	mlx_loop_hook(globel->mlx->mlx_ptr, &draw_win, &globel);
 
  	mlx_loop(mlx->mlx_ptr);
 	return (0);

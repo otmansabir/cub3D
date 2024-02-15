@@ -6,7 +6,7 @@
 /*   By: osabir <osabir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 13:55:22 by osabir            #+#    #+#             */
-/*   Updated: 2024/02/14 10:02:22 by osabir           ###   ########.fr       */
+/*   Updated: 2024/02/15 13:10:05 by osabir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 #  define BUFFER_SIZE 5
 # endif
 
-# define CUB_SIZE 32
+# define CUB_SIZE 512
 
 # define X_WIDTH 1280
 # define Y_HEIGHT 800
@@ -48,8 +48,8 @@
 # define ANGLE 60
 # define WALL_STRPI_WIDTH 1
 # define MINIMAP_FACTOR 0.2
-# define MOVE_SPEED 12.0
-# define ROTA_ANGLE 8
+# define MOVE_SPEED 30.0
+# define ROTA_ANGLE 4
 # define LINE_LENGTH 30
 
 # define RED 0xed0505  
@@ -63,7 +63,8 @@ typedef struct s_key_event
 	bool	key_back;
 	bool	key_right;
 	bool	key_left;
-	bool	key_esc;
+	bool	draws;
+	
 }			t_key_event;
 
 typedef struct s_map
@@ -126,6 +127,10 @@ typedef struct s_xpm
 	void	*img;
 	int		img_width;
 	int		img_height;
+	char	*img_addr;
+	int		bpp;
+	int		size_line;      
+	int		endian;
 }			t_xpm;
 
 typedef	struct s_horizontal
