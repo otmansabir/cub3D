@@ -132,9 +132,6 @@ If keys differ, check the key definitions in the source under `Mandatory/` (and 
 - Build errors
   - Run `make fclean && make` to rebuild. Confirm your compiler and headers are installed.
 
-## License
-No license is specified in this repository. If you plan to use or distribute this code, please contact the author.
-
 ## Acknowledgements
 - 42 Network and the cub3D subject
 - The MiniLibX library
